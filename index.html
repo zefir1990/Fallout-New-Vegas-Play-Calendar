@@ -566,12 +566,12 @@
 <body>
   <main class="terminal">
     <header class="terminal-header">
-      <p class="eyebrow">RobCo Industries (TM) Termlink // Mojave Division</p>
+      <p class="eyebrow" id="app-eyebrow">RobCo Industries (TM) Termlink // Mojave Division</p>
       <h1>
-        <span class="title-line">Fallout: New Vegas</span>
-        <span class="title-line title-line--accent">Play Calendar</span>
+        <span class="title-line" id="app-title-main">Fallout: New Vegas</span>
+        <span class="title-line title-line--accent" id="app-title-accent">Play Calendar</span>
       </h1>
-      <p class="subtitle">Daily field log of the courier's journey</p>
+      <p class="subtitle" id="app-subtitle">Daily field log of the courier's journey</p>
     </header>
 
     <section class="prompt-card" aria-labelledby="prompt-question">
@@ -584,25 +584,25 @@
       <p class="prompt-status prompt-status--pending" id="today-status" aria-live="polite">Status: awaiting your report</p>
     </section>
 
-    <section class="statistics" aria-label="Play statistics">
+    <section class="statistics" id="statistics-region" aria-label="Play statistics">
       <article class="stat-card">
-        <span class="stat-label">Days played</span>
+        <span class="stat-label" id="stat-played-label">Days played</span>
         <span class="stat-value stat-value--played" id="stat-played-days">0</span>
       </article>
       <article class="stat-card">
-        <span class="stat-label">Days not played</span>
+        <span class="stat-label" id="stat-not-played-label">Days not played</span>
         <span class="stat-value stat-value--not-played" id="stat-not-played-days">0</span>
       </article>
       <article class="stat-card">
-        <span class="stat-label">Current streak</span>
+        <span class="stat-label" id="stat-current-streak-label">Current streak</span>
         <span class="stat-value stat-value--amber" id="stat-current-streak">0</span>
       </article>
       <article class="stat-card">
-        <span class="stat-label">Longest streak</span>
+        <span class="stat-label" id="stat-longest-streak-label">Longest streak</span>
         <span class="stat-value stat-value--amber" id="stat-longest-streak">0</span>
       </article>
       <article class="stat-card">
-        <span class="stat-label">Play rate</span>
+        <span class="stat-label" id="stat-play-rate-label">Play rate</span>
         <span class="stat-value stat-value--played" id="stat-play-rate">0%</span>
         <span class="stat-hint" id="stat-play-rate-hint">0 days tracked</span>
       </article>
@@ -614,7 +614,7 @@
         <h2 class="calendar-title" id="calendar-title"></h2>
         <button class="icon-button" id="next-month" type="button" aria-label="Next month">&gt;</button>
       </div>
-      <div class="weekdays" aria-hidden="true">
+      <div class="weekdays" id="weekday-labels" aria-hidden="true">
         <span class="weekday">Sun</span>
         <span class="weekday">Mon</span>
         <span class="weekday">Tue</span>
@@ -625,16 +625,16 @@
       </div>
       <div class="calendar-days" id="calendar-days" aria-label="Play calendar days"></div>
       <ul class="legend">
-        <li><span class="legend-swatch legend-swatch--played"></span>Played</li>
-        <li><span class="legend-swatch legend-swatch--not-played"></span>Not played</li>
-        <li><span class="legend-swatch legend-swatch--pending"></span>Awaiting</li>
-        <li><span class="legend-swatch legend-swatch--untracked"></span>No data</li>
+        <li><span class="legend-swatch legend-swatch--played"></span><span id="legend-played-label">Played</span></li>
+        <li><span class="legend-swatch legend-swatch--not-played"></span><span id="legend-not-played-label">Not played</span></li>
+        <li><span class="legend-swatch legend-swatch--pending"></span><span id="legend-awaiting-label">Awaiting</span></li>
+        <li><span class="legend-swatch legend-swatch--untracked"></span><span id="legend-no-data-label">No data</span></li>
       </ul>
-      <p class="calendar-hint">Select any past day to log or toggle a play.</p>
+      <p class="calendar-hint" id="calendar-hint">Select any past day to log or toggle a play.</p>
     </section>
 
     <footer class="terminal-footer">
-      <span>Patient: Courier Six // Log status: active</span>
+      <span id="footer-status">Patient: Courier Six // Log status: active</span>
       <button class="link-button" id="reset-calendar" type="button">Reset log</button>
     </footer>
   </main>
@@ -686,8 +686,8 @@
         }
       }
 
-      static formatLongDate(isoDate) {
-        return new Intl.DateTimeFormat("en-US", {
+      static formatLongDate(isoDate, locale) {
+        return new Intl.DateTimeFormat(locale, {
           weekday: "long",
           month: "long",
           day: "numeric",
@@ -697,13 +697,183 @@
           .toUpperCase();
       }
 
-      static formatMonthTitle(year, monthIndex) {
-        return new Intl.DateTimeFormat("en-US", {
+      static formatMonthTitle(year, monthIndex, locale) {
+        return new Intl.DateTimeFormat(locale, {
           month: "long",
           year: "numeric",
         })
           .format(new Date(year, monthIndex, 1))
           .toUpperCase();
+      }
+    }
+
+    class StringsAbstractFactory {
+      get locale() {
+        throw new Error("StringsAbstractFactory.locale is not implemented");
+      }
+
+      createAppStrings() {
+        throw new Error("StringsAbstractFactory.createAppStrings is not implemented");
+      }
+
+      createPromptStrings() {
+        throw new Error("StringsAbstractFactory.createPromptStrings is not implemented");
+      }
+
+      createStatisticsStrings() {
+        throw new Error("StringsAbstractFactory.createStatisticsStrings is not implemented");
+      }
+
+      createCalendarStrings() {
+        throw new Error("StringsAbstractFactory.createCalendarStrings is not implemented");
+      }
+    }
+
+    class EnglishStringsFactory extends StringsAbstractFactory {
+      get locale() {
+        return "en-US";
+      }
+
+      createAppStrings() {
+        return {
+          documentTitle: "Fallout: New Vegas Play Calendar",
+          eyebrow: "RobCo Industries (TM) Termlink // Mojave Division",
+          titleMain: "Fallout: New Vegas",
+          titleAccent: "Play Calendar",
+          subtitle: "Daily field log of the courier's journey",
+          footerStatus: "Patient: Courier Six // Log status: active",
+          resetButton: "Reset log",
+          resetConfirmation: "Erase every recorded play day from the calendar?",
+        };
+      }
+
+      createPromptStrings() {
+        return {
+          question: "Did you play Fallout: New Vegas today?",
+          answerPlayed: "Yes / Played",
+          answerNotPlayed: "No / Not played",
+          statusPlayed: "Today: Fallout: New Vegas played",
+          statusNotPlayed: "Today: Fallout: New Vegas not played",
+          statusPending: "Status: awaiting your report",
+        };
+      }
+
+      createStatisticsStrings() {
+        return {
+          regionAriaLabel: "Play statistics",
+          playedLabel: "Days played",
+          notPlayedLabel: "Days not played",
+          currentStreakLabel: "Current streak",
+          longestStreakLabel: "Longest streak",
+          playRateLabel: "Play rate",
+          formatTrackedDays: (count) => `${count} ${count === 1 ? "day" : "days"} tracked`,
+        };
+      }
+
+      createCalendarStrings() {
+        return {
+          weekdayLabels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+          played: "Played",
+          notPlayed: "Not played",
+          awaiting: "Awaiting",
+          noData: "No data",
+          legendPlayed: "Played",
+          legendNotPlayed: "Not played",
+          legendAwaiting: "Awaiting",
+          legendNoData: "No data",
+          hint: "Select any past day to log or toggle a play.",
+          previousMonthAriaLabel: "Previous month",
+          nextMonthAriaLabel: "Next month",
+          calendarDaysAriaLabel: "Play calendar days",
+          actionPlayed: "Mark as played",
+          actionNotPlayed: "Mark as not played",
+        };
+      }
+    }
+
+    class RussianStringsFactory extends StringsAbstractFactory {
+      get locale() {
+        return "ru-RU";
+      }
+
+      createAppStrings() {
+        return {
+          documentTitle: "Fallout: New Vegas — Календарь игры",
+          eyebrow: "RobCo Industries (TM) Termlink // Отделение Мохаве",
+          titleMain: "Fallout: New Vegas",
+          titleAccent: "Календарь игры",
+          subtitle: "Ежедневный полевой журнал путешествия Курьера",
+          footerStatus: "Пациент: Курьер Шесть // Статус журнала: активен",
+          resetButton: "Сбросить журнал",
+          resetConfirmation: "Удалить все записи календаря?",
+        };
+      }
+
+      createPromptStrings() {
+        return {
+          question: "Вы играли в Fallout: New Vegas сегодня?",
+          answerPlayed: "Да / Играл(а)",
+          answerNotPlayed: "Нет / Не играл(а)",
+          statusPlayed: "Сегодня: Fallout: New Vegas — играл(а)",
+          statusNotPlayed: "Сегодня: Fallout: New Vegas — не играл(а)",
+          statusPending: "Статус: ожидание отчёта",
+        };
+      }
+
+      createStatisticsStrings() {
+        const dayForms = { one: "день", few: "дня", many: "дней", other: "дня" };
+        const pluralRules = new Intl.PluralRules("ru-RU");
+        return {
+          regionAriaLabel: "Статистика игры",
+          playedLabel: "Дней в игре",
+          notPlayedLabel: "Дней без игры",
+          currentStreakLabel: "Текущая серия",
+          longestStreakLabel: "Лучшая серия",
+          playRateLabel: "Доля игры",
+          formatTrackedDays: (count) =>
+            `${count} ${dayForms[pluralRules.select(count)] ?? dayForms.other} в журнале`,
+        };
+      }
+
+      createCalendarStrings() {
+        return {
+          weekdayLabels: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+          played: "Игра",
+          notPlayed: "Без игры",
+          awaiting: "Ожидание",
+          noData: "Нет данных",
+          legendPlayed: "Игра",
+          legendNotPlayed: "Без игры",
+          legendAwaiting: "Ожидание",
+          legendNoData: "Нет данных",
+          hint: "Выберите любой прошедший день, чтобы отметить игру.",
+          previousMonthAriaLabel: "Предыдущий месяц",
+          nextMonthAriaLabel: "Следующий месяц",
+          calendarDaysAriaLabel: "Дни календаря игры",
+          actionPlayed: "Отметить как день игры",
+          actionNotPlayed: "Отметить как день без игры",
+        };
+      }
+    }
+
+    class StringsFactoryProvider {
+      static create(languages) {
+        return StringsFactoryProvider.#resolveLocale(languages) === "ru"
+          ? new RussianStringsFactory()
+          : new EnglishStringsFactory();
+      }
+
+      static #resolveLocale(languages) {
+        for (const language of languages) {
+          const normalizedLanguage = String(language).toLowerCase();
+          if (normalizedLanguage.startsWith("ru")) {
+            return "ru";
+          }
+          if (normalizedLanguage.startsWith("en")) {
+            return "en";
+          }
+        }
+        return "en";
       }
     }
 
@@ -865,15 +1035,26 @@
 
     class PlayCalendarView {
       #model;
+      #stringsFactory;
+      #appStrings;
+      #promptStrings;
+      #statisticsStrings;
+      #calendarStrings;
       #callbacks;
       #elements;
       #visibleMonth;
 
-      constructor(model, callbacks) {
+      constructor(model, stringsFactory, callbacks) {
         this.#model = model;
+        this.#stringsFactory = stringsFactory;
+        this.#appStrings = stringsFactory.createAppStrings();
+        this.#promptStrings = stringsFactory.createPromptStrings();
+        this.#statisticsStrings = stringsFactory.createStatisticsStrings();
+        this.#calendarStrings = stringsFactory.createCalendarStrings();
         this.#callbacks = callbacks;
         this.#elements = this.#collectElements();
         this.#visibleMonth = DateUtilities.startOfMonth(new Date());
+        this.#applyStaticStrings();
         this.#attachEventListeners();
         this.render();
       }
@@ -898,10 +1079,21 @@
           return element;
         };
         return {
+          appEyebrow: selectElement("#app-eyebrow"),
+          appTitleMain: selectElement("#app-title-main"),
+          appTitleAccent: selectElement("#app-title-accent"),
+          appSubtitle: selectElement("#app-subtitle"),
+          promptQuestion: selectElement("#prompt-question"),
           todayDate: selectElement("#today-date"),
           promptStatus: selectElement("#today-status"),
           answerPlayed: selectElement("#answer-played"),
           answerNotPlayed: selectElement("#answer-not-played"),
+          statisticsRegion: selectElement("#statistics-region"),
+          statPlayedLabel: selectElement("#stat-played-label"),
+          statNotPlayedLabel: selectElement("#stat-not-played-label"),
+          statCurrentStreakLabel: selectElement("#stat-current-streak-label"),
+          statLongestStreakLabel: selectElement("#stat-longest-streak-label"),
+          statPlayRateLabel: selectElement("#stat-play-rate-label"),
           playedDays: selectElement("#stat-played-days"),
           notPlayedDays: selectElement("#stat-not-played-days"),
           currentStreak: selectElement("#stat-current-streak"),
@@ -910,10 +1102,67 @@
           playRateHint: selectElement("#stat-play-rate-hint"),
           calendarTitle: selectElement("#calendar-title"),
           calendarDays: selectElement("#calendar-days"),
+          weekdayLabels: selectElement("#weekday-labels"),
+          legendPlayedLabel: selectElement("#legend-played-label"),
+          legendNotPlayedLabel: selectElement("#legend-not-played-label"),
+          legendAwaitingLabel: selectElement("#legend-awaiting-label"),
+          legendNoDataLabel: selectElement("#legend-no-data-label"),
+          calendarHint: selectElement("#calendar-hint"),
           previousMonth: selectElement("#previous-month"),
           nextMonth: selectElement("#next-month"),
+          footerStatus: selectElement("#footer-status"),
           reset: selectElement("#reset-calendar"),
         };
+      }
+
+      #applyStaticStrings() {
+        document.documentElement.lang = this.#stringsFactory.locale;
+        document.title = this.#appStrings.documentTitle;
+        this.#elements.appEyebrow.textContent = this.#appStrings.eyebrow;
+        this.#elements.appTitleMain.textContent = this.#appStrings.titleMain;
+        this.#elements.appTitleAccent.textContent = this.#appStrings.titleAccent;
+        this.#elements.appSubtitle.textContent = this.#appStrings.subtitle;
+        this.#elements.promptQuestion.textContent = this.#promptStrings.question;
+        this.#elements.answerPlayed.textContent = this.#promptStrings.answerPlayed;
+        this.#elements.answerNotPlayed.textContent = this.#promptStrings.answerNotPlayed;
+        this.#elements.statisticsRegion.setAttribute(
+          "aria-label",
+          this.#statisticsStrings.regionAriaLabel
+        );
+        this.#elements.statPlayedLabel.textContent = this.#statisticsStrings.playedLabel;
+        this.#elements.statNotPlayedLabel.textContent = this.#statisticsStrings.notPlayedLabel;
+        this.#elements.statCurrentStreakLabel.textContent =
+          this.#statisticsStrings.currentStreakLabel;
+        this.#elements.statLongestStreakLabel.textContent =
+          this.#statisticsStrings.longestStreakLabel;
+        this.#elements.statPlayRateLabel.textContent = this.#statisticsStrings.playRateLabel;
+        this.#elements.weekdayLabels.replaceChildren(
+          ...this.#calendarStrings.weekdayLabels.map((weekdayLabel) => {
+            const weekday = document.createElement("span");
+            weekday.className = "weekday";
+            weekday.textContent = weekdayLabel;
+            return weekday;
+          })
+        );
+        this.#elements.legendPlayedLabel.textContent = this.#calendarStrings.legendPlayed;
+        this.#elements.legendNotPlayedLabel.textContent = this.#calendarStrings.legendNotPlayed;
+        this.#elements.legendAwaitingLabel.textContent = this.#calendarStrings.legendAwaiting;
+        this.#elements.legendNoDataLabel.textContent = this.#calendarStrings.legendNoData;
+        this.#elements.calendarHint.textContent = this.#calendarStrings.hint;
+        this.#elements.previousMonth.setAttribute(
+          "aria-label",
+          this.#calendarStrings.previousMonthAriaLabel
+        );
+        this.#elements.nextMonth.setAttribute(
+          "aria-label",
+          this.#calendarStrings.nextMonthAriaLabel
+        );
+        this.#elements.calendarDays.setAttribute(
+          "aria-label",
+          this.#calendarStrings.calendarDaysAriaLabel
+        );
+        this.#elements.footerStatus.textContent = this.#appStrings.footerStatus;
+        this.#elements.reset.textContent = this.#appStrings.resetButton;
       }
 
       #attachEventListeners() {
@@ -937,7 +1186,10 @@
       #renderPrompt() {
         const todayIsoDate = DateUtilities.todayIsoDate();
         const recordedStatus = this.#model.getRecordedStatus(todayIsoDate);
-        this.#elements.todayDate.textContent = DateUtilities.formatLongDate(todayIsoDate);
+        this.#elements.todayDate.textContent = DateUtilities.formatLongDate(
+          todayIsoDate,
+          this.#stringsFactory.locale
+        );
         this.#elements.answerPlayed.setAttribute(
           "aria-pressed",
           String(recordedStatus === PLAY_STATUS.PLAYED)
@@ -947,13 +1199,13 @@
           String(recordedStatus === PLAY_STATUS.NOT_PLAYED)
         );
         if (recordedStatus === PLAY_STATUS.PLAYED) {
-          this.#elements.promptStatus.textContent = "Today: Fallout: New Vegas played";
+          this.#elements.promptStatus.textContent = this.#promptStrings.statusPlayed;
           this.#elements.promptStatus.className = "prompt-status prompt-status--played";
         } else if (recordedStatus === PLAY_STATUS.NOT_PLAYED) {
-          this.#elements.promptStatus.textContent = "Today: Fallout: New Vegas not played";
+          this.#elements.promptStatus.textContent = this.#promptStrings.statusNotPlayed;
           this.#elements.promptStatus.className = "prompt-status prompt-status--not-played";
         } else {
-          this.#elements.promptStatus.textContent = "Status: awaiting your report";
+          this.#elements.promptStatus.textContent = this.#promptStrings.statusPending;
           this.#elements.promptStatus.className = "prompt-status prompt-status--pending";
         }
       }
@@ -965,8 +1217,9 @@
         this.#elements.currentStreak.textContent = String(statistics.currentStreak);
         this.#elements.longestStreak.textContent = String(statistics.longestStreak);
         this.#elements.playRate.textContent = `${statistics.playRate}%`;
-        const dayLabel = statistics.trackedDays === 1 ? "day" : "days";
-        this.#elements.playRateHint.textContent = `${statistics.trackedDays} ${dayLabel} tracked`;
+        this.#elements.playRateHint.textContent = this.#statisticsStrings.formatTrackedDays(
+          statistics.trackedDays
+        );
       }
 
       #renderCalendar() {
@@ -975,7 +1228,11 @@
         const firstWeekdayOffset = new Date(year, monthIndex, 1).getDay();
         const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
         const todayIsoDate = DateUtilities.todayIsoDate();
-        this.#elements.calendarTitle.textContent = DateUtilities.formatMonthTitle(year, monthIndex);
+        this.#elements.calendarTitle.textContent = DateUtilities.formatMonthTitle(
+          year,
+          monthIndex,
+          this.#stringsFactory.locale
+        );
         const fragment = document.createDocumentFragment();
         for (let offset = 0; offset < firstWeekdayOffset; offset += 1) {
           fragment.append(this.#createBlankDayCell());
@@ -1020,25 +1277,28 @@
           statusLabel.textContent = "\u2014";
         } else if (status === PLAY_STATUS.PLAYED) {
           cell.classList.add("day--played");
-          statusLabel.textContent = "Played";
+          statusLabel.textContent = this.#calendarStrings.played;
         } else if (status === PLAY_STATUS.NOT_PLAYED) {
           cell.classList.add("day--not-played");
-          statusLabel.textContent = "Not played";
+          statusLabel.textContent = this.#calendarStrings.notPlayed;
         } else if (isoDate === todayIsoDate && this.#model.getRecordedStatus(isoDate) === null) {
           cell.classList.add("day--pending");
-          statusLabel.textContent = "Awaiting";
+          statusLabel.textContent = this.#calendarStrings.awaiting;
         } else {
           cell.classList.add("day--untracked");
-          statusLabel.textContent = "No data";
+          statusLabel.textContent = this.#calendarStrings.noData;
         }
         if (!isFuture) {
-          const nextAction = status === PLAY_STATUS.PLAYED ? "not played" : "played";
-          const formattedDate = DateUtilities.formatLongDate(isoDate);
+          const actionLabel =
+            status === PLAY_STATUS.PLAYED
+              ? this.#calendarStrings.actionNotPlayed
+              : this.#calendarStrings.actionPlayed;
+          const formattedDate = DateUtilities.formatLongDate(isoDate, this.#stringsFactory.locale);
           cell.setAttribute(
             "aria-label",
-            `${formattedDate}: ${statusLabel.textContent}. Select to mark as ${nextAction}.`
+            `${formattedDate}: ${statusLabel.textContent}. ${actionLabel}.`
           );
-          cell.title = `Mark ${formattedDate} as ${nextAction}`;
+          cell.title = `${formattedDate} \u2014 ${actionLabel}`;
         }
         cell.append(number, statusLabel);
         return cell;
@@ -1062,10 +1322,12 @@
     class PlayCalendarController {
       #model;
       #view;
+      #resetConfirmation;
 
-      constructor(model) {
+      constructor(model, stringsFactory) {
         this.#model = model;
-        this.#view = new PlayCalendarView(model, {
+        this.#resetConfirmation = stringsFactory.createAppStrings().resetConfirmation;
+        this.#view = new PlayCalendarView(model, stringsFactory, {
           onAnswer: (status) => this.#answerToday(status),
           onToggleDay: (isoDate) => this.#toggleDay(isoDate),
           onReset: () => this.#resetCalendar(),
@@ -1083,7 +1345,7 @@
       }
 
       #resetCalendar() {
-        if (!window.confirm("Erase every recorded play day from the calendar?")) {
+        if (!window.confirm(this.#resetConfirmation)) {
           return;
         }
         this.#model.reset();
@@ -1119,9 +1381,13 @@
       }
     };
 
+    const browserLanguages = navigator.languages?.length
+      ? navigator.languages
+      : [navigator.language];
+    const stringsFactory = StringsFactoryProvider.create(browserLanguages);
     const repository = new PlayCalendarRepository(resolveStorage(), STORAGE_KEY);
     const model = new PlayCalendarModel(repository);
-    new PlayCalendarController(model);
+    new PlayCalendarController(model, stringsFactory);
   </script>
 </body>
 </html>
